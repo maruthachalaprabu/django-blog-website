@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <form class="form-inline my-2 my-lg-0 mb-4" method="GET">
+            <input class="form-control mr-sm-2" type="search" name="query" placeholder="Search posts..." value="{{ request.GET.query }}">
+                <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+</div>
+    
+{% for post in posts %}
+<article class="media content-section">
+    <img class="rounded-circle article-img" src="{{ post.author.profile.profile_pic.url }}">
+        <div class="media-body">
+                <div class="article-metadata">
+                    <a class="mr-2" href="#">{{ post.author }}</a>
+                    <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
+                </div>
+                <h2><a class="article-title" href="{% url 'blog:post-detail' post.id %}">{{ post.title }}</a></h2>
+                <p class="article-content">{{ post.content|truncatewords:50 }}</p>
+                {% if post.image %}
+                    <img class="img-fluid mb-3" src="{{ post.image.url }}" alt="{{ post.title }}">
+                {% endif %}
+            </div>
+</article>
+{% endfor %}
+    
+{% if is_paginated %}
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">Previous</a>
+                    </li>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">Last</a>
+                    </li>
+                {% endif %}
+            </ul>
+</nav>
+   {% endif %}
+{% endblock content %}

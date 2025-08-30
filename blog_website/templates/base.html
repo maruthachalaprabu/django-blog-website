@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    
+    {% if title %}
+        <title>Blog Site - {{ title }}</title>
+    {% else %}
+        <title>Blog Site</title>
+    {% endif %}
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+            <div class="container">
+                <a class="navbar-brand mr-4" href="{% url 'blog:home' %}">
+                    <img src="{% static 'images/logo1.png' %}" alt="Site Logo" height="30"class="d-inline-block align-top">Blog Site</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarToggle">
+                    <div class="navbar-nav mr-auto">
+                        <a class="nav-item nav-link" href="{% url 'blog:home' %}">Home</a>
+                        {% if user.is_authenticated %}
+                            <a class="nav-item nav-link" href="{% url 'blog:post-create' %}">New Post</a>
+                        {% endif %}
+                    </div>
+                    <div class="navbar-nav">
+                        {% if user.is_authenticated %}
+                            <a class="nav-item nav-link" href="{% url 'accounts:profile' %}">Profile</a>
+                         <form id="logout-form" action="{% url 'accounts:logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-item nav-link btn btn-link">Logout</button>
+                            </form>      
+
+                        {% else %}
+                            <a class="nav-item nav-link" href="{% url 'accounts:login' %}">Login</a>
+                            <a class="nav-item nav-link" href="{% url 'accounts:register' %}">Register</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <main role="main" class="container">
+        <div class="row">
+            <div class="col-md-8">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% block content %}{% endblock %}
+            </div>
+            <div class="col-md-4">
+                <div class="content-section">
+                    <img src="{% static 'images/default.jpg' %}" alt="Default Profile" width="80" height="80" class="rounded-circle mb-2">
+                    <h3>More Blogs</h3>
+                    <p class='text-muted'>Latest posts and updates</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/validation.js' %}"></script>
+</body>
+</html>

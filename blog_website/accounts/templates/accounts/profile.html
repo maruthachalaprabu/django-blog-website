@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="content-section">
+    <h2>{{ user.username }}'s Profile</h2>
+    <img src="{{ user.profile.profile_pic.url }}" class="rounded-circle mb-3" width="120" height="120" alt="Profile Picture">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ u_form|crispy }}
+        {{ p_form|crispy }}
+        <button class="btn btn-primary mt-2" type="submit">Update Profile</button>
+    </form>
+</div>
+{% endblock %}
